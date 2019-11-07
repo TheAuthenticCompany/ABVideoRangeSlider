@@ -31,7 +31,8 @@ Pod::Spec.new do |s|
   s.source_files = 'ABVideoRangeSlider/Classes/**/*'
 
   s.resource_bundles = {
-    'ABVideoRangeSlider' => ['ABVideoRangeSlider/Assets/*.png']
+    'ABVideoRangeSlider' => ['ABVideoRangeSlider/Assets/*.png'],
+    'ABVideoRangeSlider/Assets/*.png'
   }
 
 end
