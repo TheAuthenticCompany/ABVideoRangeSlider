@@ -155,6 +155,9 @@ public class ABVideoRangeSlider: UIView, UIGestureRecognizerDelegate {
         endTimeView = ABTimeView(size: CGSize(width: 60, height: 30), position: 1)
         endTimeView.layer.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         self.addSubview(endTimeView)
+        
+        startTimeView.isHidden = true
+        endTimeView.isHidden = true
     }
 
     public override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -164,6 +167,11 @@ public class ABVideoRangeSlider: UIView, UIGestureRecognizerDelegate {
     }
 
     // MARK: Public functions
+    public func hideControls(_ hide: Bool) {
+        [startIndicator, endIndicator, topLine, bottomLine, draggableView].forEach {
+            $0.isHidden = hide
+        }
+    }
 
     public func setProgressIndicatorImage(image: UIImage){
         self.progressIndicator.imageView.image = image
@@ -373,7 +381,7 @@ public class ABVideoRangeSlider: UIView, UIGestureRecognizerDelegate {
 
         recognizer.setTranslation(CGPoint.zero, in: self)
 
-        progressIndicator.center = CGPoint(x: position , y: progressIndicator.center.y)
+        progressIndicator.center = CGPoint(x: position, y: progressIndicator.center.y)
 
         let percentage = progressIndicator.center.x * 100 / self.frame.width
 

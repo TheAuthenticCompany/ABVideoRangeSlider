@@ -91,5 +91,10 @@ class ViewController: UIViewController, ABVideoRangeSliderDelegate {
     func indicatorDidChangePosition(videoRangeSlider: ABVideoRangeSlider, position: Float64) {
         print("position of indicator: \(position)")
     }
-
+    
+    private var controlsHidden = false
+    @IBAction func hideControls(_ sender: Any) {
+        controlsHidden.toggle()
+        videoRangeSlider.hideControls(controlsHidden)
+    }
 }
