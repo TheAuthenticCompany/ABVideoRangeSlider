@@ -43,8 +43,8 @@ public class ABVideoRangeSlider: UIView, UIGestureRecognizerDelegate {
     var startPercentage: CGFloat    = 0         // Represented in percentage
     var endPercentage: CGFloat      = 100       // Represented in percentage
 
-    let topBorderHeight: CGFloat      = 5
-    let bottomBorderHeight: CGFloat   = 5
+    let topBorderHeight: CGFloat      = 3
+    let bottomBorderHeight: CGFloat   = 4
 
     let indicatorWidth: CGFloat = 20.0
 
@@ -80,6 +80,20 @@ public class ABVideoRangeSlider: UIView, UIGestureRecognizerDelegate {
 
     private func setup(){
         self.isUserInteractionEnabled = true
+        
+        // Setup Top and bottom line
+
+        topLine = ABBorder(frame: CGRect(x: 0,
+                                         y: -topBorderHeight,
+                                         width: indicatorWidth,
+                                         height: topBorderHeight))
+        self.addSubview(topLine)
+
+        bottomLine = ABBorder(frame: CGRect(x: 0,
+                                            y: self.frame.size.height,
+                                            width: indicatorWidth,
+                                            height: bottomBorderHeight))
+        self.addSubview(bottomLine)
 
         // Setup Start Indicator
         let startDrag = UIPanGestureRecognizer(target:self,
@@ -106,21 +120,6 @@ public class ABVideoRangeSlider: UIView, UIGestureRecognizerDelegate {
         endIndicator.addGestureRecognizer(endDrag)
         self.addSubview(endIndicator)
 
-
-        // Setup Top and bottom line
-
-        topLine = ABBorder(frame: CGRect(x: 0,
-                                         y: -topBorderHeight,
-                                         width: indicatorWidth,
-                                         height: topBorderHeight))
-        self.addSubview(topLine)
-
-        bottomLine = ABBorder(frame: CGRect(x: 0,
-                                            y: self.frame.size.height,
-                                            width: indicatorWidth,
-                                            height: bottomBorderHeight))
-        self.addSubview(bottomLine)
-
         self.addObserver(self,
                          forKeyPath: "bounds",
                          options: NSKeyValueObservingOptions(rawValue: 0),
@@ -133,8 +132,8 @@ public class ABVideoRangeSlider: UIView, UIGestureRecognizerDelegate {
 
         progressIndicator = ABProgressIndicator(frame: CGRect(x: 0,
                                                               y: -topBorderHeight,
-                                                              width: 10,
-                                                              height: self.frame.size.height + bottomBorderHeight + topBorderHeight))
+                                                              width: 4,
+                                                              height: self.frame.size.height + bottomBorderHeight + topBorderHeight + 5))
         progressIndicator.addGestureRecognizer(progressDrag)
         self.addSubview(progressIndicator)
 
@@ -534,21 +533,21 @@ public class ABVideoRangeSlider: UIView, UIGestureRecognizerDelegate {
 
         startIndicator.center = CGPoint(x: startPosition, y: startIndicator.center.y)
         endIndicator.center = CGPoint(x: endPosition, y: endIndicator.center.y)
-        progressIndicator.center = CGPoint(x: progressPosition, y: progressIndicator.center.y)
+        progressIndicator.center = CGPoint(x: progressPosition, y: endIndicator.center.y)
         draggableView.frame = CGRect(x: startIndicator.frame.origin.x + startIndicator.frame.size.width,
                                      y: 0,
                                      width: endIndicator.frame.origin.x - startIndicator.frame.origin.x - endIndicator.frame.size.width,
                                      height: self.frame.height)
 
 
-        topLine.frame = CGRect(x: startIndicator.frame.origin.x + startIndicator.frame.width,
+        topLine.frame = CGRect(x: startIndicator.frame.midX,
                                y: -topBorderHeight,
-                               width: endIndicator.frame.origin.x - startIndicator.frame.origin.x - endIndicator.frame.size.width,
+                               width: endIndicator.frame.midX - startIndicator.frame.midX,
                                height: topBorderHeight)
 
-        bottomLine.frame = CGRect(x: startIndicator.frame.origin.x + startIndicator.frame.width,
+        bottomLine.frame = CGRect(x: startIndicator.frame.midX,
                                   y: self.frame.size.height,
-                                  width: endIndicator.frame.origin.x - startIndicator.frame.origin.x - endIndicator.frame.size.width,
+                                  width: endIndicator.frame.midX - startIndicator.frame.midX,
                                   height: bottomBorderHeight)
 
         // Update time view
