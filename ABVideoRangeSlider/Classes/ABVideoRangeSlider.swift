@@ -53,6 +53,8 @@ public class ABVideoRangeSlider: UIView, UIGestureRecognizerDelegate {
     
     public var isProgressIndicatorSticky: Bool = false
     public var isProgressIndicatorDraggable: Bool = true
+    ///allows progress indicator to go past end position on updateProgressIndicator(seconds:)
+    public var isProgressIndicatorLimited: Bool = false
     
     var isUpdatingThumbnails = false
     var isReceivingGesture: Bool = false
@@ -167,9 +169,9 @@ public class ABVideoRangeSlider: UIView, UIGestureRecognizerDelegate {
     }
 
     // MARK: Public functions
-    public func hideControls(_ hide: Bool) {
+    public func hideControls(_ hidden: Bool) {
         [startIndicator, endIndicator, topLine, bottomLine, draggableView].forEach {
-            $0.isHidden = hide
+            $0.isHidden = hidden
         }
     }
 
@@ -189,7 +191,7 @@ public class ABVideoRangeSlider: UIView, UIGestureRecognizerDelegate {
         if !isReceivingGesture {
             let endSeconds = secondsFromValue(value: self.endPercentage)
             
-            if seconds >= endSeconds {
+            if seconds >= endSeconds && isProgressIndicatorLimited {
                 self.resetProgressPosition()
             } else {
                 self.progressPercentage = self.valueFromSeconds(seconds: Float(seconds))
