@@ -190,7 +190,7 @@ public class ABVideoRangeSlider: UIView, UIGestureRecognizerDelegate {
         if !isReceivingGesture {
             let endSeconds = secondsFromValue(value: self.endPercentage)
             
-            if seconds >= endSeconds && isProgressIndicatorLimited {
+            if (seconds >= endSeconds && isProgressIndicatorLimited) || (seconds >= 100) {
                 self.resetProgressPosition()
             } else {
                 self.progressPercentage = self.valueFromSeconds(seconds: Float(seconds))
