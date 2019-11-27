@@ -149,16 +149,21 @@ public class ABVideoRangeSlider: UIView, UIGestureRecognizerDelegate {
 
         // Setup time labels
 
-        startTimeView = ABTimeView(size: CGSize(width: 60, height: 30), position: 1)
+        let timeIndicatorSize = CGSize(width: 60, height: 20)
+        startTimeView = ABTimeView(frame:
+            CGRect(origin: CGPoint(x: startIndicator.center.x - timeIndicatorSize.width/2,
+                                   y: startIndicator.frame.maxY + 10),
+                   size: timeIndicatorSize))
+        
         startTimeView.layer.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         self.addSubview(startTimeView)
 
-        endTimeView = ABTimeView(size: CGSize(width: 60, height: 30), position: 1)
+        endTimeView = ABTimeView(frame:
+            CGRect(origin: CGPoint(x: endIndicator.center.x - timeIndicatorSize.width/2,
+                                   y: endIndicator.frame.maxY + 10),
+                   size: timeIndicatorSize))
         endTimeView.layer.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         self.addSubview(endTimeView)
-        
-        startTimeView.isHidden = true
-        endTimeView.isHidden = true
     }
 
     public override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -524,12 +529,12 @@ public class ABVideoRangeSlider: UIView, UIGestureRecognizerDelegate {
     override public func layoutSubviews() {
         super.layoutSubviews()
 
-        startTimeView.timeLabel.text = self.secondsToFormattedString(totalSeconds: secondsFromValue(value: self.startPercentage))
-        endTimeView.timeLabel.text = self.secondsToFormattedString(totalSeconds: secondsFromValue(value: self.endPercentage))
+        startTimeView.display(seconds: secondsFromValue(value: startPercentage))
+        endTimeView.display(seconds: secondsFromValue(value: endPercentage))
 
-        let startPosition = positionFromValue(value: self.startPercentage)
-        let endPosition = positionFromValue(value: self.endPercentage)
-        let progressPosition = positionFromValue(value: self.progressPercentage)
+        let startPosition = positionFromValue(value: startPercentage)
+        let endPosition = positionFromValue(value: endPercentage)
+        let progressPosition = positionFromValue(value: progressPercentage)
 
         startIndicator.center = CGPoint(x: startPosition, y: startIndicator.center.y)
         endIndicator.center = CGPoint(x: endPosition, y: endIndicator.center.y)
@@ -537,7 +542,7 @@ public class ABVideoRangeSlider: UIView, UIGestureRecognizerDelegate {
         draggableView.frame = CGRect(x: startIndicator.frame.origin.x + startIndicator.frame.size.width,
                                      y: 0,
                                      width: endIndicator.frame.origin.x - startIndicator.frame.origin.x - endIndicator.frame.size.width,
-                                     height: self.frame.height)
+                                     height: frame.height)
 
 
         topLine.frame = CGRect(x: startIndicator.frame.midX,
@@ -546,7 +551,7 @@ public class ABVideoRangeSlider: UIView, UIGestureRecognizerDelegate {
                                height: topBorderHeight)
 
         bottomLine.frame = CGRect(x: startIndicator.frame.midX,
-                                  y: self.frame.size.height,
+                                  y: frame.size.height,
                                   width: endIndicator.frame.midX - startIndicator.frame.midX,
                                   height: bottomBorderHeight)
 
@@ -559,22 +564,9 @@ public class ABVideoRangeSlider: UIView, UIGestureRecognizerDelegate {
     override public func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         let extendedBounds = CGRect(x: -startIndicator.frame.size.width,
                                     y: -topLine.frame.size.height,
-                                    width: self.frame.size.width + startIndicator.frame.size.width + endIndicator.frame.size.width,
-                                    height: self.frame.size.height + topLine.frame.size.height + bottomLine.frame.size.height)
+                                    width: frame.size.width + startIndicator.frame.size.width + endIndicator.frame.size.width,
+                                    height: frame.size.height + topLine.frame.size.height + bottomLine.frame.size.height)
         return extendedBounds.contains(point)
-    }
-
-
-    private func secondsToFormattedString(totalSeconds: Float64) -> String{
-        let hours:Int = Int(totalSeconds.truncatingRemainder(dividingBy: 86400) / 3600)
-        let minutes:Int = Int(totalSeconds.truncatingRemainder(dividingBy: 3600) / 60)
-        let seconds:Int = Int(totalSeconds.truncatingRemainder(dividingBy: 60))
-
-        if hours > 0 {
-            return String(format: "%i:%02i:%02i", hours, minutes, seconds)
-        } else {
-            return String(format: "%02i:%02i", minutes, seconds)
-        }
     }
 
     deinit {
