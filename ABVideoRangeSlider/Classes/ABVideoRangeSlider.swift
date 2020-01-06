@@ -25,13 +25,13 @@ public class ABVideoRangeSlider: UIView, UIGestureRecognizerDelegate {
     
     public weak var delegate: ABVideoRangeSliderDelegate? = nil
 
-    var startIndicator      = ABStartIndicator()
-    var endIndicator        = ABEndIndicator()
     var topLine             = ABBorder()
     var bottomLine          = ABBorder()
     var progressIndicator   = ABProgressIndicator()
     var draggableView       = UIView()
 
+    public var startIndicator      = ABStartIndicator()
+    public var endIndicator        = ABEndIndicator()
     public var startTimeView       = ABTimeView()
     public var endTimeView         = ABTimeView()
 
@@ -205,11 +205,11 @@ public class ABVideoRangeSlider: UIView, UIGestureRecognizerDelegate {
         }
     }
 
-    public func setStartIndicatorImage(image: UIImage){
+    public func setStartIndicatorImage(image: UIImage?){
         self.startIndicator.imageView.image = image
     }
 
-    public func setEndIndicatorImage(image: UIImage){
+    public func setEndIndicatorImage(image: UIImage?){
         self.endIndicator.imageView.image = image
     }
 

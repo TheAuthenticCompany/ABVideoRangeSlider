@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ABEndIndicator: UIView {
+public class ABEndIndicator: UIView {
     
     public var imageView = UIImageView()
     

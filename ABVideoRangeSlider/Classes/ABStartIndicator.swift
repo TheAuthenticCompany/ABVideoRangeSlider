@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ABStartIndicator: UIView {
+public class ABStartIndicator: UIView {
     
     var imageView = UIImageView()
     
