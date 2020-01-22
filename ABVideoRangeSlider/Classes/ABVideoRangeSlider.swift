@@ -29,6 +29,8 @@ public class ABVideoRangeSlider: UIView, UIGestureRecognizerDelegate {
     var bottomLine          = ABBorder()
     var progressIndicator   = ABProgressIndicator()
     var draggableView       = UIView()
+    var opaqueLeftView      = UIView()
+    var opaqueRightView     = UIView()
 
     public var startIndicator      = ABStartIndicator()
     public var endIndicator        = ABEndIndicator()
@@ -55,6 +57,8 @@ public class ABVideoRangeSlider: UIView, UIGestureRecognizerDelegate {
     public var isProgressIndicatorDraggable: Bool = true
     ///allows progress indicator to go past end position on updateProgressIndicator(seconds:)
     public var isProgressIndicatorLimited: Bool = false
+    /// shows an opaque overlay before and after the end indicators in case is set to true
+    public var isWindowHighlighted: Bool = false
     
     var isUpdatingThumbnails = false
     var isReceivingGesture: Bool = false
@@ -164,6 +168,26 @@ public class ABVideoRangeSlider: UIView, UIGestureRecognizerDelegate {
                    size: timeIndicatorSize))
         endTimeView.layer.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         self.addSubview(endTimeView)
+        
+        // setup opacque views
+        if isWindowHighlighted {
+            opaqueLeftView = UIView(frame: CGRect(x: 0, y: 0,
+                                                  width: topLine.frame.origin.x,
+                                                  height: bottomLine.frame.origin.y - topLine.frame.origin.y - topLine.frame.height))
+            
+            opaqueRightView = UIView(frame: CGRect(x: topLine.bounds.width, y: topLine.frame.height,
+                                                   width: frame.width - topLine.frame.maxX,
+                                                   height: bottomLine.frame.origin.y - topLine.frame.origin.y - topLine.frame.height))
+            
+            opaqueLeftView.backgroundColor = .black
+            opaqueLeftView.alpha = 0.5
+            
+            opaqueRightView.backgroundColor = .black
+            opaqueRightView.alpha = 0.5
+            
+            insertSubview(opaqueLeftView, at: 0)
+            topLine.insertSubview(opaqueRightView, at: 0)
+        }
     }
 
     public override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -220,7 +244,7 @@ public class ABVideoRangeSlider: UIView, UIGestureRecognizerDelegate {
 
     public func setTimeView(view: ABTimeView){
         self.startTimeView = view
-        self.endTimeView = view
+            self.endTimeView = view
     }
 
     public func setTimeViewPosition(position: ABTimeViewPosition){
@@ -539,16 +563,24 @@ public class ABVideoRangeSlider: UIView, UIGestureRecognizerDelegate {
         startIndicator.center = CGPoint(x: startPosition, y: startIndicator.center.y)
         endIndicator.center = CGPoint(x: endPosition, y: endIndicator.center.y)
         progressIndicator.center = CGPoint(x: progressPosition, y: endIndicator.center.y)
+        
         draggableView.frame = CGRect(x: startIndicator.frame.origin.x + startIndicator.frame.size.width,
                                      y: 0,
                                      width: endIndicator.frame.origin.x - startIndicator.frame.origin.x - endIndicator.frame.size.width,
                                      height: frame.height)
 
-
         topLine.frame = CGRect(x: startIndicator.frame.midX,
                                y: -topBorderHeight,
                                width: endIndicator.frame.midX - startIndicator.frame.midX,
                                height: topBorderHeight)
+        
+        opaqueLeftView.frame = CGRect(x: 0, y: 0,
+                                      width: topLine.frame.origin.x,
+                                      height: bottomLine.frame.origin.y - topLine.frame.origin.y - topLine.frame.height)
+
+        opaqueRightView.frame = CGRect(x: topLine.bounds.width, y: topLine.frame.height,
+                                       width: frame.width - topLine.frame.maxX,
+                                       height: bottomLine.frame.origin.y - topLine.frame.origin.y - topLine.frame.height)
 
         bottomLine.frame = CGRect(x: startIndicator.frame.midX,
                                   y: frame.size.height,
